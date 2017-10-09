@@ -25,8 +25,8 @@
 
 					ARController.getUserMediaThreeScene({
 						maxARVideoSize: 640,
-						//cameraParam: 'Data/camera_para-iPhone 5 rear 640x480 1.0m.dat',
-						cameraParam: 'Data/camera_para.dat',
+						cameraParam: 'Data/camera_para-iPhone 5 rear 640x480 1.0m.dat',
+						//cameraParam: 'Data/camera_para.dat',
 						onSuccess: function(arScene, arController, arCamera) {
 							//console.log(artoolkit.AR_MATRIX_CODE_DETECTION);
 							//设置ARController模式检测模式以检测条形码标记。  
@@ -75,7 +75,7 @@
 							torus.material.shading = THREE.FlatShading;
 							torus.position.z = 0.5;
 							torus.rotation.x = Math.PI / 2;
-
+							
 							arController.loadMarker('Data/patt.hiro', function(markerId) {
 //								console.log(arController);
 								var markerRoot = arController.createThreeMarker(markerId);
