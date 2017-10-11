@@ -15,8 +15,11 @@
 
     <script type="text/javascript">
         var video = document.querySelector('video');
+        video.setAttribute('autoplay', '');
+    		video.setAttribute('muted', '');
+    		video.setAttribute('playsinline', '');
+    		
         var audio, audioType;
-
         var canvas1 = document.getElementById('canvas1');
         var context1 = canvas1.getContext('2d');
 
@@ -39,15 +42,18 @@
 
         function getMedia() {
             if (navigator.getUserMedia) {
-                navigator.getUserMedia({
+                 var constraints = {
 //                  'video': {
 //                      'optional': [{
 //                          'sourceId': exArray[1] //0为前置摄像头，1为后置
 //                      }]
 //                  },
-					'video' : true,
-                    'audio': true
-                }, successFunc, errorFunc);    //success是获取成功的回调函数
+					'video' : {
+						facingMode : 'user'
+					},
+                    'audio': false
+                };    //success是获取成功的回调函数
+                navigator.mediaDevices.getUserMedia(constraints).then(successFunc).catch(errorFunc)
             }
             else {
                 alert('Native device media streaming (getUserMedia) not supported in this browser.');
@@ -57,9 +63,9 @@
         function successFunc(stream) {
         		console.log(stream);
             //alert('Succeed to get media!');
-            if (video.mozSrcObject !== undefined) {
+            if (video.srcObject !== undefined) {
                 //Firefox中，video.mozSrcObject最初为null，而不是未定义的，我们可以靠这个来检测Firefox的支持
-                video.mozSrcObject = stream;
+                video.srcObject = stream;
             }
             else {
                 video.src = window.URL && window.URL.createObjectURL(stream) || stream;
