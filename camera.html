@@ -51,7 +51,7 @@
 					'video' : {
 						facingMode : 'environment'
 					},
-                    'audio': false
+                    'audio': true
                 };    //success是获取成功的回调函数
                 navigator.mediaDevices.getUserMedia(constraints).then(successFunc).catch(errorFunc)
             }
