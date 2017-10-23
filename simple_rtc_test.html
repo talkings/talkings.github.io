@@ -163,7 +163,8 @@
 
 							console.log('success', stream);
 							console.log(this);
-							this.video.src = window.URL.createObjectURL(stream);
+							this.video.srcObject = stream;
+							//this.video.src = window.URL.createObjectURL(stream);
 							this.video.onclick = function() {
 								this.video.play();
 							};
