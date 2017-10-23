@@ -63,19 +63,25 @@
 						style: 'mapbox://styles/tonyfang/cj8znena60uf62robpzzsneqo',
 						center: [-87.61694, 41.86625],
 						zoom: 16.99,
-						pitch: 40,
-						bearing: 20,
-						pitch : 60,
+						//倾斜度，按偏离屏幕水平面的度数计量（0-60)
+						pitch : 40,
+						//地图的初始方位角（旋转度），以正北方的逆时针转动度数计量。如果构造函数选项中没有指定  bearing ，Mapbox GL JS 将在地图样式对象中进行查找。如果样式中也没定义的话，那么它将默认为  0 。
 						bearing : 200
 					});
-					setTimeout(()=>{
-						let i = 0,j = 0;
-						setInterval(()=>{
-							map.setBearing(i+=1);
-							map.setPitch(j+=1);
-							
-						}, 0	)
-					}, 5000)
+					window.addEventListener('deviceorientation', function(event) { 
+						var alpha = event.alpha; 
+						var beta = event.beta; 
+						var gamma = event.gamma;
+						map.setBearing(gamma);
+						map.setPitch(alpha);
+					}, false);
+//					setTimeout(()=>{
+//						let i = 0,j = 0;
+//						setInterval(()=>{
+//							map.setBearing(i+=1);
+//							map.setPitch(j+=1);
+//						}, 0	)
+//					}, 5000)
 					map.on('load', function() {
 
 						map.addLayer({
@@ -162,7 +168,6 @@
 						success(stream) {
 
 							console.log('success', stream);
-							console.log(this);
 							this.video.srcObject = stream;
 							//this.video.src = window.URL.createObjectURL(stream);
 							this.video.onclick = function() {
@@ -209,7 +214,7 @@
 						}
 					}
 					const ar = new artest();
-					ar.getUserMedia();
+					//ar.getUserMedia();
 				</script>
 
 	</body>
