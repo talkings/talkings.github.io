@@ -1,0 +1,216 @@
+<html>
+
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.js'></script>
+		<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.css' rel='stylesheet' />
+		<style>
+			video {
+				position: fixed;
+				right: 0px;
+				bottom: 0px;
+				min-width: 100%;
+				min-height: 100%;
+				height: auto;
+				width: auto;
+				/*加滤镜*/
+				/*-webkit-filter: grayscale(100%);  
+	            filter:grayscale(100%);*/
+			}
+			
+			canvas {
+				transform: scale(-1, 1);
+			}
+			
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			
+			.overlay {
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+				z-index: 999;
+				visibility: visible;
+			}
+			#map{
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				left: 0;
+				top: 0;
+			}
+			#map canvas{
+				transform: matrix(1,0,0,1,0,0);
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="overlay">
+			<div id='map'></div>
+		</div>
+				<!--<script src="../build/artoolkit.debug.js"></script>
+		<script src="../js/artoolkit.api.js"></script>-->
+				<script src="./js/ar.js/artoolkit.min.js"></script>
+				<script>
+					mapboxgl.accessToken = 'pk.eyJ1IjoidG9ueWZhbmciLCJhIjoiY2o1dW93anh4MDdsdTMybno3dzdxOGEyNyJ9.VA8v1jGeKdO1l8ifNZ2FXg';
+					var map = new mapboxgl.Map({
+						container: 'map',
+						style: 'mapbox://styles/tonyfang/cj8znena60uf62robpzzsneqo',
+						center: [-87.61694, 41.86625],
+						zoom: 16.99,
+						pitch: 40,
+						bearing: 20,
+						pitch : 60,
+						bearing : 200
+					});
+					setTimeout(()=>{
+						let i = 0,j = 0;
+						setInterval(()=>{
+							map.setBearing(i+=1);
+							map.setPitch(j+=1);
+							
+						}, 0	)
+					}, 5000)
+					map.on('load', function() {
+
+						map.addLayer({
+							'id': 'room-extrusion',
+							'type': 'fill-extrusion',
+							'source': {
+								// Geojson Data source used in vector tiles, documented at
+								// https://gist.github.com/ryanbaumann/a7d970386ce59d11c16278b90dde094d
+								'type': 'geojson',
+								'data': 'https://www.mapbox.com/mapbox-gl-js/assets/data/indoor-3d-map.geojson'
+							},
+							'paint': {
+								// See the Mapbox Style Spec for details on property functions
+								// https://www.mapbox.com/mapbox-gl-style-spec/#types-function
+								'fill-extrusion-color': {
+									// Get the fill-extrusion-color from the source 'color' property.
+									'property': 'color',
+									'type': 'identity'
+								},
+								'fill-extrusion-height': {
+									// Get fill-extrusion-height from the source 'height' property.
+									'property': 'height',
+									'type': 'identity'
+								},
+								'fill-extrusion-base': {
+									// Get fill-extrusion-base from the source 'base_height' property.
+									'property': 'base_height',
+									'type': 'identity'
+								},
+								// Make extrusions slightly opaque for see through indoor walls.
+								'fill-extrusion-opacity': 0.5
+							}
+						});
+					});
+					/**
+					 * AR 测试类
+					 */
+					class artest {
+						constructor() {}
+						/**
+						 * 创建video对象
+						 */
+						renderVideo() {
+							var video = document.createElement('video');
+							video.setAttribute('autoplay', '');
+							video.setAttribute('muted', '');
+							video.setAttribute('playsinline', '');
+							this.video = video;
+							document.body.appendChild(video);
+						}
+						getUserMedia() {
+							this.renderVideo();
+							if(navigator.mediaDevices){
+								const constraints = { 
+									audio: false, 
+									video: { width: 1280, height: 720 }
+								};
+								navigator.mediaDevices.getUserMedia(constraints)
+								.then(this.success.bind(this))
+								.catch(this.errorCallback)
+							}else{
+								navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+								var hdConstraints = {
+									audio: false,
+									video: {
+										mandatory: {
+											maxWidth: 1280,
+											maxHeight: 720
+										}
+									}
+								};
+	
+								if(navigator.getUserMedia) {
+									navigator.getUserMedia(hdConstraints, this.success.bind(this), this.errorCallback);
+								} else {
+									errorCallback('');
+								}
+							}
+							
+						}
+						errorCallback(e) {
+							console.log("Can't access user media", e);
+						}
+						success(stream) {
+
+							console.log('success', stream);
+							console.log(this);
+							this.video.src = window.URL.createObjectURL(stream);
+							this.video.onclick = function() {
+								this.video.play();
+							};
+							this.video.play();
+							return false;
+							var cameraParam = new ARCameraParam();
+							cameraParam.onload = () => {
+								var arController;
+								var target = document.querySelector('.overlay');
+								var interval = setInterval(() => {
+									if(!this.video.videoWidth) return;
+									if(!arController) {
+										//设置图案标记追踪
+										//arController.setPatternDetectionMode(artoolkit.AR_TEMPLATE_MATCHING_COLOR_AND_MATRIX);
+										arController = new ARController(this.video, cameraParam);
+										var markerId;
+										//初始化标记
+//										arController.loadMarker('Data/patt.hiro', function(markerid) {
+//											markerId = markerid
+//										});
+//										arController.debugSetup();
+										//监听获取标记事件	
+//										arController.addEventListener('getMarker', function(ev) {
+//											//图案标记跟踪
+//											if(ev.data.marker.idPatt === markerId) {
+//												console.info('相机矩阵',arController.getCameraMatrix());
+//												//console.log('saw marker', ev.data.marker);
+//												//console.log('转换矩阵', arController.getTransformationMatrix());
+//												//console.info(arController)
+////												
+//												//target.style.visibility = 'visible';
+//											} else {
+//												//target.style.visibility = 'hidden';
+//											}
+//										});
+									}
+									arController.process();
+								}, 16);
+
+							};
+							cameraParam.src = 'Data/camera_para.dat';
+						}
+					}
+					const ar = new artest();
+					ar.getUserMedia();
+				</script>
+
+	</body>
+
+</html>
