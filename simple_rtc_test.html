@@ -137,7 +137,11 @@
 							if(navigator.mediaDevices){
 								const constraints = { 
 									audio: false, 
-									video: { width: 1280, height: 720 }
+									video: { 
+										width: 1280, 
+										height: 720,
+										facingMode: { exact: "environment" }
+									}
 								};
 								navigator.mediaDevices.getUserMedia(constraints)
 								.then(this.success.bind(this))
