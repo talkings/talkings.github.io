@@ -4,6 +4,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.js'></script>
 		<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.css' rel='stylesheet' />
+		<script src="js/three.js/build/three.js"></script>
+		<script src="js/artookit.three.js"></script>
+		<script src="js/three.js/ColladaLoader.js"></script>
 		<style>
 			video {
 				position: fixed;
@@ -42,6 +45,7 @@
 				position: absolute;
 				left: 0;
 				top: 0;
+				/*display: none;*/
 			}
 			#map canvas{
 				transform: matrix(1,0,0,1,0,0);
@@ -73,7 +77,7 @@
 						var beta = event.beta; 
 						var gamma = event.gamma;
 //						console.log(gamma, gamma + 180);
-						map.setBearing(gamma + 90);
+						map.setBearing(-gamma + 90);
 						map.setPitch(beta);
 					}, false);
 //					setTimeout(()=>{
@@ -92,7 +96,7 @@
 								// Geojson Data source used in vector tiles, documented at
 								// https://gist.github.com/ryanbaumann/a7d970386ce59d11c16278b90dde094d
 								'type': 'geojson',
-								'data': 'https://www.mapbox.com/mapbox-gl-js/assets/data/indoor-3d-map.geojson'
+								'data': './Data/indoor-3d-map.geojson'
 							},
 							'paint': {
 								// See the Mapbox Style Spec for details on property functions
@@ -141,7 +145,7 @@
 									video: { 
 										width: 1280, 
 										height: 720,
-										facingMode: { exact: "environment" }
+//										facingMode: { exact: "environment" }
 									}
 								};
 								navigator.mediaDevices.getUserMedia(constraints)
@@ -179,7 +183,6 @@
 								this.video.play();
 							};
 							this.video.play();
-							return false;
 							var cameraParam = new ARCameraParam();
 							cameraParam.onload = () => {
 								var arController;
@@ -187,15 +190,47 @@
 								var interval = setInterval(() => {
 									if(!this.video.videoWidth) return;
 									if(!arController) {
+										
+										
 										//设置图案标记追踪
 										//arController.setPatternDetectionMode(artoolkit.AR_TEMPLATE_MATCHING_COLOR_AND_MATRIX);
 										arController = new ARController(this.video, cameraParam);
-										var markerId;
-										//初始化标记
+										
+										arController.loadNFTMarker('./Data/NFT/vue-book', function(markerid){
+											var markerRoot = arController.createThreeNFTMarker(markerid);
+												var loader = new THREE.ColladaLoader();
+												loader.options.convertUpAxis = true;
+												loader.load('./models/dae/file.dae', function(collada) {
+													var dae = collada.scene;
+													dae.traverse(function(child) {
+														if(child instanceof THREE.SkinnedMesh) {
+															var animation = new THREE.Animation(child, child.geometry.animation);
+															animation.play();
+														}
+													});
+													dae.scale.x = dae.scale.y = dae.scale.z = 0.1;
+													//dae.position.z = 0;
+													dae.position.z = 0;
+													dae.position.x = 0;
+													dae.position.y = 0;
+													//dae.rotation.x = Math.PI/2;
+				
+													dae.rotation.set(0, Math.PI / 2, Math.PI / 2);
+													dae.updateMatrix();
+													markerRoot.add(dae);
+													console.log(markerRoot);
+//													var scene	= new THREE.Scene();
+//													scene.add(markerRoot);
+													console.log(arController);
+													//arScene.scene.add(markerRoot);
+												});
+										});
+//										var markerId;
+//										//初始化标记
 //										arController.loadMarker('Data/patt.hiro', function(markerid) {
 //											markerId = markerid
 //										});
-//										arController.debugSetup();
+										//arController.debugSetup();
 										//监听获取标记事件	
 //										arController.addEventListener('getMarker', function(ev) {
 //											//图案标记跟踪
