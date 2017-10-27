@@ -145,7 +145,7 @@
 									video: { 
 										width: 1280, 
 										height: 720,
-										facingMode: { exact: "environment" }
+//										facingMode: { exact: "environment" }
 									}
 								};
 								navigator.mediaDevices.getUserMedia(constraints)
@@ -183,7 +183,7 @@
 								this.video.play();
 							};
 							this.video.play();
-							return false;
+//							return false;
 							var cameraParam = new ARCameraParam();
 							cameraParam.onload = () => {
 								var arController;
@@ -201,7 +201,7 @@
 											var markerRoot = arController.createThreeNFTMarker(markerid);
 												var loader = new THREE.ColladaLoader();
 												loader.options.convertUpAxis = true;
-												loader.load('./models/dae/file.dae', function(collada) {
+												loader.load('./models/untitled.dae', function(collada) {
 													var dae = collada.scene;
 													dae.traverse(function(child) {
 														if(child instanceof THREE.SkinnedMesh) {
@@ -222,8 +222,8 @@
 													console.log(markerRoot);
 //													var scene	= new THREE.Scene();
 //													scene.add(markerRoot);
-													console.log(arController);
-													//arScene.scene.add(markerRoot);
+//													console.log(arController);
+//													//arScene.scene.add(markerRoot);
 												});
 										});
 //										var markerId;
