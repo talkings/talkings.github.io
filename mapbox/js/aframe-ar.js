@@ -5610,7 +5610,7 @@ ARjs.Profile.prototype.reset = function () {
 	}
 	this.defaultMarkerParameters = {
 		type : 'pattern',
-		patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.hiro',
+		patternUrl : THREEx.ArToolkitContext.baseURL + '../patt.hiro',
 		changeMatrixMode: 'modelViewMatrix',
 	}
 	return this
@@ -5665,7 +5665,7 @@ ARjs.Profile.prototype.defaultMarker = function (trackingBackend) {
 	if( trackingBackend === 'artoolkit' ){
 		this.contextParameters.detectionMode = 'mono'
 		this.defaultMarkerParameters.type = 'pattern'
-		this.defaultMarkerParameters.patternUrl = THREEx.ArToolkitContext.baseURL + '../data/data/patt.hiro'
+		this.defaultMarkerParameters.patternUrl = THREEx.ArToolkitContext.baseURL + '../patt.hiro'
 	}else if( trackingBackend === 'aruco' ){
 		this.contextParameters.detectionMode = 'mono'
 		this.defaultMarkerParameters.type = 'barcode'
@@ -8187,7 +8187,7 @@ AFRAME.registerComponent('arjs-anchor', {
 			// honor this.data.preset
 			if( _this.data.preset === 'hiro' ){
 				arProfile.defaultMarkerParameters.type = 'pattern'
-				arProfile.defaultMarkerParameters.patternUrl = THREEx.ArToolkitContext.baseURL+'../patt.hiro'
+				arProfile.defaultMarkerParameters.patternUrl = THREEx.ArToolkitContext.baseURL+'.. / patt.hiro'
 				arProfile.defaultMarkerParameters.markersAreaEnabled = false
 			}else if( _this.data.preset === 'kanji' ){
 				arProfile.defaultMarkerParameters.type = 'pattern'
