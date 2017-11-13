@@ -5605,7 +5605,7 @@ ARjs.Profile.prototype.reset = function () {
 	}
 
 	this.contextParameters = {
-		cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../talkings.github.io/mapbox/camera_para.dat',
+		cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../mapbox/camera_para.dat',
 		detectionMode: 'mono',
 	}
 	this.defaultMarkerParameters = {
